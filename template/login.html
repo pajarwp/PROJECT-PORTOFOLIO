@@ -1,0 +1,68 @@
+<title>Los Zapatos</title>
+
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+
+<link rel="stylesheet" href="css/login.css">
+
+<div class="cotn_principal">
+  <div class="cont_centrar">
+
+    <div class="cont_login">
+      <div class="cont_info_log_sign_up">
+        <div class="col_md_login">
+          <div class="cont_ba_opcitiy">
+
+            <h2>LOGIN</h2>
+            <p>Already have an account?</p>
+            <button class="btn_login" onclick="cambiar_login()">LOGIN</button>
+          </div>
+        </div>
+        <div class="col_md_sign_up">
+          <div class="cont_ba_opcitiy">
+            <h2>SIGN UP</h2>
+
+
+            <p>Don't have an account?</p>
+
+            <button class="btn_sign_up" onclick="cambiar_sign_up()">SIGN UP</button>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="cont_back_info">
+        <div class="cont_img_back_grey">
+          <img src="images/img_bg_2.jpg" alt="" />
+        </div>
+
+      </div>
+      <div class="cont_forms">
+        <div class="cont_img_back_">
+          <img src="images/img_bg_2.jpg" alt="" />
+        </div>
+        <div class="cont_form_login">
+          <a href="#" onclick="ocultar_login_sign_up()"><i class="material-icons">&#xE5C4;</i></a>
+          <h2>LOGIN</h2>
+          <input type="text" placeholder="Username" />
+          <input type="password" placeholder="Password" />
+          <button class="btn_login" onclick="cambiar_login()">LOGIN</button>
+        </div>
+
+        <div class="cont_form_sign_up">
+          <a href="#" onclick="ocultar_login_sign_up()"><i class="material-icons">&#xE5C4;</i></a>
+          <h2>SIGN UP</h2>
+          <input type="text" placeholder="Username" />
+          <input type="email" placeholder="Email" />
+          <input type="password" placeholder="Password" />
+          <input type="password" placeholder="Confirm Password" />
+          <button class="btn_sign_up" onclick="cambiar_sign_up()">SIGN UP</button>
+
+        </div>
+      </div>
+      <a href="home.html"><button class="button button1">Back</button></a>
+    </div>
+  </div>
+</div>
+
+<script src="js/login.js"></script>
