@@ -25,17 +25,18 @@ class CartResource(Resource):
                 list_item = []
                 total_price = 0
                 for data in sort :
-                    data = marshal(data, Carts.response_field)
-                    item = qry2.get(data['item_id'])
-                    item = marshal(item, Items.response_field)
-                    total_price = total_price + data['total_price']                
-                    detail = { item['item_name']: data['item_sum']}
-                    list_item.append(detail)
-                dict_item = {'list_item' : list_item}
-                cart.append(dict_item)
-                total = {'total_payment' : total_price}
-                cart.append(total)
-                return cart, 200, {'Content-Type': 'application/json'}
+                    if data['transaction_id'] == 0 :
+                        data = marshal(data, Carts.response_field)
+                        item = qry2.get(data['item_id'])
+                        item = marshal(item, Items.response_field)
+                        total_price = total_price + data['total_price']                
+                        detail = { item['item_name']: data['item_sum']}
+                        list_item.append(detail)
+                    dict_item = {'list_item' : list_item}
+                    cart.append(dict_item)
+                    total = {'total_payment' : total_price}
+                    cart.append(total)
+                    return cart, 200, {'Content-Type': 'application/json'}
         else:
             return 'UNAUTORIZED', 500, { 'Content-Type': 'application/json' }
 
@@ -56,7 +57,7 @@ class CartResource(Resource):
             if qry.qty < args['item_sum'] :
                 return 'Not Enough Stock', 500, { 'Content-Type': 'application/json' }
             else :
-                carts = Carts(None, identity['buyer_id'], args['item_id'], args['item_sum'], (qry.price * args['item_sum']))
+                carts = Carts(None, identity['buyer_id'], args['item_id'], args['item_sum'], (qry.price * args['item_sum']), 0)
                 qry.qty = (qry.qty - args['item_sum'])
                 db.session.add(carts)
                 db.session.commit()
@@ -85,6 +86,8 @@ class CartResource(Resource):
                     return {'status': 'NOT FOUND','message':'Unautorized User'}, 404, {'Content-Type':'application/json'}
                 elif (qry2.qty + qry1.item_sum) < args['item_sum'] :
                     return 'Not Enough Stock', 500, { 'Content-Type': 'application/json' }
+                elif qry1.transaction_id != 0 :
+                    return 'Already Paid', 500, { 'Content-Type': 'application/json' }
                 else:
                     qry2.qty = ((qry2.qty + qry1.item_sum) - args['item_sum'])     
                     qry1.item_sum = args['item_sum']
@@ -105,6 +108,8 @@ class CartResource(Resource):
                 return {'status': 'NOT FOUND','message':'Cart not found'}, 404, {'Content-Type':'application/json'}        
             elif qry is not None and qry.buyer_id != identity['buyer_id'] :
                 return {'status': 'NOT FOUND','message':'Unautorized Buyer'}, 404, {'Content-Type':'application/json'}            
+            elif qry1.transaction_id != 0 :
+                    return 'Already Paid', 500, { 'Content-Type': 'application/json' }
             else:
                 db.session.delete(qry)
                 db.session.commit()

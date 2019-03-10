@@ -50,12 +50,14 @@ from blueprint.buyer.resources import bp_buyer
 from blueprint.item.resources import bp_item
 from blueprint.auth import bp_auth
 from blueprint.cart.resources import bp_cart
+from blueprint.transaction.resources import bp_transaction
 
 app.register_blueprint(bp_user)
 app.register_blueprint(bp_buyer)
 app.register_blueprint(bp_auth)
 app.register_blueprint(bp_item)
 app.register_blueprint(bp_cart)
+app.register_blueprint(bp_transaction)
 
 db.create_all()
 
