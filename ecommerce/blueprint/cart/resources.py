@@ -52,13 +52,16 @@ class CartResource(Resource):
             args = parse.parse_args()
 
             qry = Items.query.get(args['item_id'])
+            
+            if qry.qty < args['item_sum'] :
+                return 'Not Enough Stock', 500, { 'Content-Type': 'application/json' }
+            else :
+                carts = Carts(None, identity['buyer_id'], args['item_id'], args['item_sum'], (qry.price * args['item_sum']))
+                qry.qty = (qry.qty - args['item_sum'])
+                db.session.add(carts)
+                db.session.commit()
 
-            carts = Carts(None, identity['buyer_id'], args['item_id'], args['item_sum'], (qry.price * args['item_sum']))
-
-            db.session.add(carts)
-            db.session.commit()
-
-            return marshal(carts, Carts.response_field), 200, {'Content-Type': 'application/json'}
+                return marshal(carts, Carts.response_field), 200, {'Content-Type': 'application/json'}
 
     @jwt_required
     def put(self, cart_id):
@@ -67,13 +70,12 @@ class CartResource(Resource):
 
         if identity['status'] == 'buyer' :
             parse = reqparse.RequestParser()
-            parse.add_argument('item_id', location='json', type=int, required=True)
             parse.add_argument('item_sum', location='json', type=int, required=True)
 
             args = parse.parse_args()
 
             qry1 = Carts.query.get(cart_id)
-            qry2 = Items.query.get(args['item_id'])
+            qry2 = Items.query.get(qry1.item_id)
             if qry2 is None :
                 return {'status': 'NOT FOUND','message':'Item not found'}, 404, {'Content-Type':'application/json'}
             else :
@@ -81,11 +83,12 @@ class CartResource(Resource):
                     return {'status': 'NOT FOUND','message':'Cart not found'}, 404, {'Content-Type':'application/json'}
                 elif qry1 is not None and qry1.buyer_id != identity['buyer_id'] :
                     return {'status': 'NOT FOUND','message':'Unautorized User'}, 404, {'Content-Type':'application/json'}
-                else:    
-                    qry1.item_id = args['item_id']
+                elif (qry2.qty + qry1.item_sum) < args['item_sum'] :
+                    return 'Not Enough Stock', 500, { 'Content-Type': 'application/json' }
+                else:
+                    qry2.qty = ((qry2.qty + qry1.item_sum) - args['item_sum'])     
                     qry1.item_sum = args['item_sum']
                     qry1.total_price = (args['item_sum'] * qry2.price)
-
                     db.session.commit()
 
                     return marshal(qry1, Carts.response_field), 200, {'Content-Type': 'application/json'}

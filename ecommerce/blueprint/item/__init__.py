@@ -10,6 +10,7 @@ class Items(db.Model):
     price = db.Column(db.Integer)
     size = db.Column(db.String(50))
     color = db.Column(db.String(50))
+    qty = db.Column(db.Integer)
     posted_by = db.Column(db.String(50))
 
     response_field = {
@@ -19,16 +20,18 @@ class Items(db.Model):
         'price' : fields.Integer,
         'size' : fields.String,
         'color' : fields.String,
+        'qty' : fields.Integer,
         'posted_by' : fields.String,
     }
 
-    def __init__(self, item_id, item_name, category, price, size, color, posted_by):
+    def __init__(self, item_id, item_name, category, price, size, color, qty, posted_by):
         self.item_id = item_id
         self.item_name = item_name
         self.category = category
         self.price = price
         self.size = size
         self.color = color
+        self.qty = qty
         self.posted_by = posted_by
 
     def __repr__(self):

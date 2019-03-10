@@ -62,10 +62,11 @@ class ItemResource(Resource):
             parse.add_argument('price', location='json', type=int, required=True)
             parse.add_argument('size', location='json', required=True)
             parse.add_argument('color', location='json', required=True)
+            parse.add_argument('qty', location='json', type=int, required=True)
 
             args = parse.parse_args()
 
-            items = Items(None, args['item_name'], args['category'], args['price'], args['size'], args['color'], identity['username'])
+            items = Items(None, args['item_name'], args['category'], args['price'], args['size'], args['color'], args['qty'], identity['username'])
 
             db.session.add(items)
             db.session.commit()
@@ -84,6 +85,7 @@ class ItemResource(Resource):
             parse.add_argument('price', location='json', type=int, required=True)
             parse.add_argument('size', location='json', required=True)
             parse.add_argument('color', location='json', required=True)
+            parse.add_argument('qty', location='json', type=int, required=True)
 
             args = parse.parse_args()
 
@@ -98,6 +100,7 @@ class ItemResource(Resource):
                 qry.price = args['price']
                 qry.size = args['size']
                 qry.color = args['color']
+                qry.qty = args['qty']
                 qry.posted_by = identity['username']
                 db.session.commit()
 
