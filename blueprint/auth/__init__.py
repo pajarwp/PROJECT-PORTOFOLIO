@@ -1,4 +1,4 @@
-import logging, json
+import logging, json, hashlib
 from flask import Blueprint
 from flask_restful import Api, Resource, reqparse, marshal
 from ..user import Users
@@ -16,8 +16,9 @@ class CreateTokenUserResources(Resource):
         parser.add_argument('username', location='json', required=True)
         parser.add_argument('password', location='json', required=True)
         args = parser.parse_args()
+        password = hashlib.md5(args['password'].encode()).hexdigest()
 
-        user = Users.query.filter_by(username = args['username']).filter_by(password = args['password']).first()
+        user = Users.query.filter_by(username = args['username']).filter_by(password = password).first()
         
         if user is not None:
             qry = marshal(user, Users.response_field)
@@ -28,8 +29,8 @@ class CreateTokenUserResources(Resource):
             }
             token = create_access_token(identity = data)
         else:
-            return {'status':'UNAUTORIZED', 'message':'wron=g username or password'}, 401
-        return {'token': token}, 200
+            return {'status':'UNAUTORIZED', 'message':'wrong username or password'}, 401
+        return {'status': 'success', 'message': 'logged in' ,'token': token}, 200
 
 class CreateTokenBuyerResources(Resource):
 
@@ -38,8 +39,9 @@ class CreateTokenBuyerResources(Resource):
         parser.add_argument('username', location='json', required=True)
         parser.add_argument('password', location='json', required=True)
         args = parser.parse_args()
+        password = hashlib.md5(args['password'].encode()).hexdigest()
 
-        buyer = Buyers.query.filter_by(username = args['username']).filter_by(password = args['password']).first()
+        buyer = Buyers.query.filter_by(username = args['username']).filter_by(password = password).first()
         
         if buyer is not None:
             qry = marshal(buyer, Buyers.response_field)
@@ -50,8 +52,8 @@ class CreateTokenBuyerResources(Resource):
             }
             token = create_access_token(identity = data)
         else:
-            return {'status':'UNAUTORIZED', 'message':'wrong username or email'}, 401
-        return {'token': token}, 200
+            return {'status':'UNAUTORIZED', 'message':'wrong username or password'}, 401
+        return {'status':'success', 'message':'logged in', 'token': token}, 200
 
 api.add_resource(CreateTokenUserResources, '/login/user')
 api.add_resource(CreateTokenBuyerResources, '/login/buyer')

@@ -39,8 +39,9 @@ class TransactionResource(Resource) :
                 transactions = Transactions(None, identity['buyer_id'], total_price)
                 db.session.add(transactions)
                 db.session.commit()
+                data = marshal(transactions, Transactions.response_field)
 
-                return marshal(transactions, Transactions.response_field), 200, {'Content-Type': 'application/json'}
+                return {'status':'transaction successful','data':data}, 200, {'Content-Type': 'application/json'}
 
     @jwt_required
     def get(self, transaction_id=None):
@@ -63,15 +64,16 @@ class TransactionResource(Resource) :
                 for row in qry.limit(args['rp']).offset(offset).all():
                     if row.buyer_id == identity['buyer_id'] :
                         rows.append(marshal(row, Transactions.response_field))
-                return marshal(rows, Transactions.response_field), 200, { 'Content-Type': 'application/json' }
+                return {'status':'success','data':rows}, 200, {'Content-Type': 'application/json'}
 
             else:
                 qry = Transactions.query.get(transaction_id)
+                data = marshal(qry, Transactions.response_field)
                 if qry.buyer_id != identity['buyer_id'] :
-                    return "Unauthorized Buyer", 200, { 'Content-Type': 'application/json' }
+                    return {'status':'UNAUTORIZED', 'message':'unautorized buyer'}, 401, { 'Content-Type': 'application/json' }
                 if qry is not None:
-                    return marshal(qry, Transactions.response_field), 200, { 'Content-Type': 'application/json' }                
+                    return {'status':'success','data':data}, 200, {'Content-Type': 'application/json'}
                 else:
-                    return "Data Not Found", 200, { 'Content-Type': 'application/json' }
+                    return {'status': 'NOT FOUND','message':'Transaction not found'}, 404, {'Content-Type':'application/json'}
 
 api.add_resource(TransactionResource,'/transaction', '/transaction/<int:transaction_id>')

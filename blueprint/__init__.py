@@ -13,7 +13,7 @@ app = Flask(__name__)
 api = Api(app, catch_all_404s=True)
 # ===============================================================
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:password@0.0.0.0:3306/ecommerce'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://pajarwp:password@172.31.26.245:3306/ecommerce'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['JWT_SECRET_KEY'] = 'SFhewoihewg870923ugsihgh3298hgoisdghsiueg32gMAE'
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(days=1)

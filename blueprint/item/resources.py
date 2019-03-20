@@ -13,8 +13,6 @@ class ItemResource(Resource):
     def get(self, item_id=None):
         if item_id == None:
             parse = reqparse.RequestParser()
-            parse.add_argument('p',type=int,location='args',default=1)
-            parse.add_argument('rp',type=int,location='args',default=5)
             parse.add_argument('item_name',location='args')
             parse.add_argument('max_price', type=int, location='args')
             parse.add_argument('category',location='args')
@@ -23,7 +21,6 @@ class ItemResource(Resource):
             parse.add_argument('posted_by',location='args')
           
             args = parse.parse_args()
-            offset = args['p']*args['rp']-args['rp']
             qry = Items.query
             if args['item_name'] is not None:
                 qry = qry.filter(Items.item_name.like("%"+args['item_name']+"%"))                  
@@ -36,18 +33,19 @@ class ItemResource(Resource):
             if args['posted_by'] is not None:
                 qry = qry.filter(Items.posted_by.like("%"+args['posted_by']+"%"))    
             item_lists = []
-            for item_list in qry.limit(args['rp']).offset(offset).all():
+            for item_list in qry:
                 item = marshal(item_list, Items.response_field)
                 if args['max_price'] is not None:
                     if item['price'] <= args['max_price'] :
                         item_lists.append(item)
                 else :
                     item_lists.append(item)
-            return item_lists, 200, {'Content-Type': 'application/json'}
+            return {'status':'success','data':item_lists}, 200, {'Content-Type': 'application/json'}
         else:
             qry = Items.query.get(item_id)
+            data = marshal(qry, Items.response_field)
             if qry is not None:
-                return marshal(qry, Items.response_field)
+                return {'status':'success','data':data}, 200, {'Content-Type': 'application/json'}
             return {'status': 'NOT FOUND','message':'Item not found'}, 404, {'Content-Type':'application/json'}
 
     @jwt_required
@@ -70,8 +68,9 @@ class ItemResource(Resource):
 
             db.session.add(items)
             db.session.commit()
+            data = marshal(items, Items.response_field)
 
-            return marshal(items, Items.response_field), 200, {'Content-Type': 'application/json'}
+            return {'status':'success', 'message':"item posted", 'data': data}, 200, {'Content-Type': 'application/json'}
 
     @jwt_required
     def put(self, item_id):
@@ -103,10 +102,11 @@ class ItemResource(Resource):
                 qry.qty = args['qty']
                 qry.posted_by = identity['username']
                 db.session.commit()
+                data = marshal(qry, Items.response_field)
 
-                return marshal(qry, Items.response_field), 200, {'Content-Type': 'application/json'}
+                return {'status':'success', 'message':"Items's data edited", 'data': data}, 200, {'Content-Type': 'application/json'}
         else:
-            return 'UNAUTORIZED', 500, { 'Content-Type': 'application/json' }
+            return {'status':'UNAUTORIZED', 'message':'unautorized user'}, 401, { 'Content-Type': 'application/json' }
             
     @jwt_required
     def delete(self, item_id):
@@ -122,9 +122,10 @@ class ItemResource(Resource):
             else:
                 db.session.delete(qry)
                 db.session.commit()
-                return ("Deleted")
+                data = marshal(qry, Items.response_field)
+                return {'status': 'success','message':"Item's data deleted", 'data': data}, 200, {'Content-Type':'application/json'}        
         else:
-            return 'UNAUTORIZED', 500, { 'Content-Type': 'application/json' }
+            return {'status':'UNAUTORIZED', 'message':'unautorized user'}, 401, { 'Content-Type': 'application/json' }
 
 class ItemUserResource(Resource):
     @jwt_required
@@ -134,8 +135,6 @@ class ItemUserResource(Resource):
         if identity['status'] == 'user':
             if item_id == None:
                 parse = reqparse.RequestParser()
-                parse.add_argument('p',type=int,location='args',default=1)
-                parse.add_argument('rp',type=int,location='args',default=5)
                 parse.add_argument('item_name',location='args')
                 parse.add_argument('max_price', type=int, location='args')
                 parse.add_argument('category',location='args')
@@ -144,7 +143,6 @@ class ItemUserResource(Resource):
                 parse.add_argument('posted_by',location='args')
 
                 args = parse.parse_args()
-                offset = args['p']*args['rp']-args['rp']
                 qry = Items.query
                 if args['item_name'] is not None:
                     qry = qry.filter(Items.item_name.like("%"+args['item_name']+"%"))               
@@ -157,7 +155,7 @@ class ItemUserResource(Resource):
                 if args['posted_by'] is not None:
                     qry = qry.filter(Items.posted_by.like("%"+args['posted_by']+"%"))    
                 item_lists = []
-                for item_list in qry.limit(args['rp']).offset(offset).all():
+                for item_list in qry:
                     if item_list.posted_by == identity['username'] :
                         item = marshal(item_list, Items.response_field)
                         if args['max_price'] is not None:
@@ -165,15 +163,16 @@ class ItemUserResource(Resource):
                                 item_lists.append(item)
                         else :
                             item_lists.append(item)
-                return item_lists, 200, {'Content-Type': 'application/json'}
+                return {'status':'success','data':item_lists}, 200, {'Content-Type': 'application/json'}
                         
             else:
                 qry = Items.query.get(item_id)
+                data = marshal(qry, Items.response_field)
                 if qry is not None and qry.posted_by == identity['username']:
-                    return marshal(qry, Items.response_field)
+                    return {'status':'success','data':data}, 200, {'Content-Type': 'application/json'}
                 return {'status': 'NOT FOUND','message':'Item not found'}, 404, {'Content-Type':'application/json'}
         else:
-            return 'UNAUTORIZED', 500, { 'Content-Type': 'application/json' }
+            return {'status':'UNAUTORIZED', 'message':'unautorized user'}, 401, { 'Content-Type': 'application/json' }
 
 
 api.add_resource(ItemResource,'/item', '/item/<int:item_id>')
