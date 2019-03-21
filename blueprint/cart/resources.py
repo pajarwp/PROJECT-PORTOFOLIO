@@ -137,6 +137,8 @@ class TransactionDetailResource(Resource):
             qry = Carts.query
             sort = qry.filter(Carts.buyer_id.like(identity['buyer_id'])).filter(Carts.transaction_id.like(transaction_id))
             qry2 = Items.query
+            if sort is None :
+                return {'status': 'NOT FOUND','message':'Transaction detail not found'}, 404, {'Content-Type':'application/json'}                
             if sort is not None:
                 cart = []
                 list_item = []
