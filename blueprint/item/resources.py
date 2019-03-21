@@ -69,7 +69,7 @@ class ItemResource(Resource):
 
             args = parse.parse_args()
 
-            items = Items(None, args['item_name'], args['category'], args['price'], args['size'], args['color'], args['qty'], identity['username'], args['imgurl1'], args['imgurl2'], args['imgurl3'], args['imgurl4'])
+            items = Items(None, args['item_name'], args['category'], args['price'], args['size'], args['color'], args['qty'], identity['store_name'], args['imgurl1'], args['imgurl2'], args['imgurl3'], args['imgurl4'])
 
             db.session.add(items)
             db.session.commit()
@@ -100,7 +100,7 @@ class ItemResource(Resource):
             qry = Items.query.get(item_id)
             if qry is None :
                 return {'status': 'NOT FOUND','message':'Item not found'}, 404, {'Content-Type':'application/json'}
-            elif qry is not None and qry.posted_by != identity['username'] :
+            elif qry is not None and qry.posted_by != identity['store_name'] :
                 return {'status': 'NOT FOUND','message':'Unautorized User'}, 404, {'Content-Type':'application/json'}
             else:    
                 qry.item_name = args['item_name']
@@ -131,7 +131,7 @@ class ItemResource(Resource):
             qry = Items.query.get(item_id)
             if qry is None:
                 return {'status': 'NOT FOUND','message':'Item not found'}, 404, {'Content-Type':'application/json'}        
-            elif qry is not None and qry.posted_by != identity['username'] :
+            elif qry is not None and qry.posted_by != identity['store_name'] :
                 return {'status': 'NOT FOUND','message':'Unautorized User'}, 404, {'Content-Type':'application/json'}            
             else:
                 db.session.delete(qry)
@@ -170,7 +170,7 @@ class ItemUserResource(Resource):
                     qry = qry.filter(Items.posted_by.like("%"+args['posted_by']+"%"))    
                 item_lists = []
                 for item_list in qry:
-                    if item_list.posted_by == identity['username'] :
+                    if item_list.posted_by == identity['store_name'] :
                         item = marshal(item_list, Items.response_field)
                         if args['max_price'] is not None:
                             if item['price'] <= args['max_price'] :
@@ -182,7 +182,7 @@ class ItemUserResource(Resource):
             else:
                 qry = Items.query.get(item_id)
                 data = marshal(qry, Items.response_field)
-                if qry is not None and qry.posted_by == identity['username']:
+                if qry is not None and qry.posted_by == identity['store_name']:
                     return {'status':'success','data':data}, 200, {'Content-Type': 'application/json'}
                 return {'status': 'NOT FOUND','message':'Item not found'}, 404, {'Content-Type':'application/json'}
         else:

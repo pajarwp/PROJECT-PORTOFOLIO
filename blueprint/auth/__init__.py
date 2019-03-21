@@ -29,7 +29,7 @@ class CreateTokenUserResources(Resource):
             }
             token = create_access_token(identity = data)
         else:
-            return {'status':'UNAUTORIZED', 'message':'wrong store_name or password'}, 401
+            return {'status':'UNAUTORIZED', 'message':'wrong store name or password'}, 401
         return {'status': 'success', 'message': 'logged in' ,'token': token}, 200
 
 class CreateTokenBuyerResources(Resource):
