@@ -12,7 +12,7 @@ class Users(db.Model):
     website = db.Column(db.String(50))
     status = db.Column(db.String(50))
     url_image = db.Column(db.String(50))
-    description = db.Column(db.String(50))
+    description = db.Column(db.Text)
 
     response_field = {
         'user_id' : fields.Integer,
