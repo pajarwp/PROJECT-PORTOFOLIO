@@ -12,7 +12,7 @@ class Items(db.Model):
     color = db.Column(db.String(50))
     qty = db.Column(db.Integer)
     posted_by = db.Column(db.String(50))
-    description = db.Column(db.String(50))
+    description = db.Column(db.Text)
     imgurl1 = db.Column(db.String(50))
     imgurl2 = db.Column(db.String(50))
     imgurl3 = db.Column(db.String(50))
