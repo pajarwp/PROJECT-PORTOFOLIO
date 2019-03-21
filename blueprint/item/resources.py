@@ -69,7 +69,7 @@ class ItemResource(Resource):
 
             args = parse.parse_args()
 
-            items = Items(None, args['item_name'], args['category'], args['price'], args['size'], args['color'], args['qty'], identity['store_name'], args['imgurl1'], args['imgurl2'], args['imgurl3'], args['imgurl4'])
+            items = Items(None, args['item_name'], args['category'], args['price'], args['size'], args['color'], args['qty'], identity['store_name'], args['description'], args['imgurl1'], args['imgurl2'], args['imgurl3'], args['imgurl4'])
 
             db.session.add(items)
             db.session.commit()
