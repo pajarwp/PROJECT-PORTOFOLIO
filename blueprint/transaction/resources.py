@@ -21,7 +21,7 @@ class TransactionResource(Resource) :
             qry = Carts.query
             qry1 = Transactions.query
             sort = qry.filter(Carts.buyer_id.like(identity['buyer_id']))
-            sort2 = qry1.filter(Transactions.buyer_id.like(identity['buyer_id'])).first()
+            sort2 = qry1.first()
             if sort is not None :
                 total_price = 0
                 for data in sort :
