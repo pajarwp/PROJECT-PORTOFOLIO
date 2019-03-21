@@ -137,8 +137,6 @@ class TransactionDetailResource(Resource):
             qry = Carts.query
             sort = qry.filter(Carts.buyer_id.like(identity['buyer_id'])).filter(Carts.transaction_id.like(transaction_id))
             qry2 = Items.query
-            if sort is None :
-                return {'status': 'NOT FOUND','message':'Transaction detail not found'}, 404, {'Content-Type':'application/json'}                
             if sort is not None:
                 cart = []
                 list_item = []
@@ -160,7 +158,7 @@ class TransactionDetailResource(Resource):
                             'qty' : data['item_sum'],
                         }                
                         list_item.append(item_dict)
-                return {'status':'success', 'list_item': list_item, 'total_payment':total_price}, 200, {'Content-Type': 'application/json'}
+                return {'status':'success', 'list_item': list_item, 'total_payment':total_price}, 200, {'Content-Type': 'application/json'}                
         else:
             return {'status':'UNAUTORIZED', 'message':'unautorized user'}, 401, { 'Content-Type': 'application/json' }    
 api.add_resource(CartResource,'/my_cart', '/my_cart/<int:cart_id>')
