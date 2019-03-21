@@ -111,6 +111,7 @@ class CartResource(Resource):
         identity = marshal(buyer, Buyers.response_field)
         if identity['status'] == 'buyer' :
             qry = Carts.query.get(cart_id)
+            qry2 = Items.query.get(qry.item_id)
             if qry is None:
                 return {'status': 'NOT FOUND','message':'Cart not found'}, 404, {'Content-Type':'application/json'}        
             elif qry is not None and qry.buyer_id != identity['buyer_id'] :
@@ -118,6 +119,7 @@ class CartResource(Resource):
             elif qry.transaction_id != 0 :
                 return {'status':'NOT FOUND','message':'Cart already paid'}, 404, { 'Content-Type': 'application/json' }
             else:
+                qry2.qty = (qry2.qty + qry.item_sum)     
                 db.session.delete(qry)
                 db.session.commit()
                 data = marshal(qry, Carts.response_field)

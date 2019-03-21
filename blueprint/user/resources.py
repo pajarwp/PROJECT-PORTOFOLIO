@@ -13,7 +13,7 @@ api = Api(bp_user)
 class UserResource(Resource):
     def __init__(self):
         if Users.query.first() is None:
-            users = Users(None, 'superuser', 'admin@gmail.com', hashlib.md5('jar'.encode()).hexdigest(), 'admin')
+            users = Users(None, 'superuser', 'admin@gmail.com', None, hashlib.md5('passwordadmin'.encode()).hexdigest(), None, 'admin', None, 'Admin Ecommerce')
             db.session.add(users)
             db.session.commit()
 
@@ -21,22 +21,26 @@ class UserResource(Resource):
         if user_id == None:
             parse = reqparse.RequestParser()
             parse.add_argument('user_id',location='args')
-            parse.add_argument('username',location='args')
+            parse.add_argument('store_name',location='args')
             
             args = parse.parse_args()
             qry = Users.query
             if args['user_id'] is not None :
                 qry = qry.filter(Users.user_id.like(args['user_id']))                  
-            if args['username'] is not None:
-                qry = qry.filter(Users.username.like("%"+args['username']+"%"))
+            if args['store_name'] is not None:
+                qry = qry.filter(Users.store_name.like("%"+args['store_name']+"%"))
             user_lists = []
             for user in qry:
                 data = marshal(user, Users.response_field)
                 user_data = {
                     'user_id' : data['user_id'],
-                    'username' : data['username'],
+                    'store_name' : data['store_name'],
                     'email' : data['email'],
+                    'phone' : data['phone'],
+                    'website' : data['website'],
                     'status' : data['status'],
+                    'url_image' : data['url_image'],
+                    'description' : data['description'],
                 }
                 user_lists.append(user_data)
             return {'status':'success','data':user_lists}, 200, {'Content-Type': 'application/json'}
@@ -44,24 +48,32 @@ class UserResource(Resource):
             qry = Users.query.get(user_id)
             data = marshal(qry, Users.response_field)
             user_data = {
-                'user_id' : data['user_id'],
-                'username' : data['username'],
-                'email' : data['email'],
-                'status' : data['status'],
-            }                    
+                    'user_id' : data['user_id'],
+                    'store_name' : data['store_name'],
+                    'email' : data['email'],
+                    'phone' : data['phone'],
+                    'website' : data['website'],
+                    'status' : data['status'],
+                    'url_image' : data['url_image'],
+                    'description' : data['description'],
+                }                    
             if qry is not None:
                 return user_data
             return {'status': 'NOT FOUND','message':'User not found'}, 404, {'Content-Type':'application/json'}                
 
     def post(self):
         parse = reqparse.RequestParser()
-        parse.add_argument('username', location='json', required=True)
+        parse.add_argument('store_name', location='json', required=True)
         parse.add_argument('email', location='json', required=True)
+        parse.add_argument('phone', location='json', required=True)
         parse.add_argument('password', location='json', required=True)
+        parse.add_argument('website', location='json', required=True)
+        parse.add_argument('url_image', location='json', required=True)
+        parse.add_argument('description', location='json', required=True)
 
         args = parse.parse_args()
         password = hashlib.md5(args['password'].encode()).hexdigest()
-        users = Users(None, args['username'], args['email'], password, 'user')
+        users = Users(None, args['store_name'], args['email'], args['phone'], password, args['website'], 'user', args['url_image'], args['description'])
 
         db.session.add(users)
         db.session.commit()
@@ -75,9 +87,13 @@ class UserResource(Resource):
 
         if identity['status'] == 'user':
             parse = reqparse.RequestParser()
-            parse.add_argument('username', location='json', required=True)
+            parse.add_argument('store_name', location='json', required=True)
             parse.add_argument('email', location='json', required=True)
+            parse.add_argument('phone', location='json', required=True)
             parse.add_argument('password', location='json', required=True)
+            parse.add_argument('website', location='json', required=True)
+            parse.add_argument('url_image', location='json', required=True)
+            parse.add_argument('description', location='json', required=True)
 
             args = parse.parse_args()
             password = hashlib.md5(args['password'].encode()).hexdigest()
@@ -86,9 +102,13 @@ class UserResource(Resource):
             if qry is None:
                 return {'status': 'NOT FOUND','message':'User not found'}, 404, {'Content-Type':'application/json'}
             else:    
-                qry.username = args['username']
+                qry.store_name = args['store_name']
                 qry.email = args['email']
+                qry.phone = args['phone']
                 qry.password = password
+                qry.website = args['website']
+                qry.url_image = args['url_image']
+                qry.description = args['description']
 
                 db.session.commit()
                 data = marshal(qry, Users.response_field)

@@ -61,10 +61,15 @@ class ItemResource(Resource):
             parse.add_argument('size', location='json', required=True)
             parse.add_argument('color', location='json', required=True)
             parse.add_argument('qty', location='json', type=int, required=True)
+            parse.add_argument('description', location='json', required=True)
+            parse.add_argument('imgurl1', location='json', required=True)
+            parse.add_argument('imgurl2', location='json', required=True)
+            parse.add_argument('imgurl3', location='json', required=True)
+            parse.add_argument('imgurl4', location='json', required=True)
 
             args = parse.parse_args()
 
-            items = Items(None, args['item_name'], args['category'], args['price'], args['size'], args['color'], args['qty'], identity['username'])
+            items = Items(None, args['item_name'], args['category'], args['price'], args['size'], args['color'], args['qty'], identity['username'], args['imgurl1'], args['imgurl2'], args['imgurl3'], args['imgurl4'])
 
             db.session.add(items)
             db.session.commit()
@@ -85,7 +90,11 @@ class ItemResource(Resource):
             parse.add_argument('size', location='json', required=True)
             parse.add_argument('color', location='json', required=True)
             parse.add_argument('qty', location='json', type=int, required=True)
-
+            parse.add_argument('description', location='json', required=True)
+            parse.add_argument('imgurl1', location='json', required=True)
+            parse.add_argument('imgurl2', location='json', required=True)
+            parse.add_argument('imgurl3', location='json', required=True)
+            parse.add_argument('imgurl4', location='json', required=True)
             args = parse.parse_args()
 
             qry = Items.query.get(item_id)
@@ -100,7 +109,12 @@ class ItemResource(Resource):
                 qry.size = args['size']
                 qry.color = args['color']
                 qry.qty = args['qty']
-                qry.posted_by = identity['username']
+                qry.description = args['description']
+                qry.imgurl1 = args['imgurl1']
+                qry.imgurl2 = args['imgurl2']
+                qry.imgurl3 = args['imgurl3']
+                qry.imgurl4 = args['imgurl4']
+
                 db.session.commit()
                 data = marshal(qry, Items.response_field)
 
