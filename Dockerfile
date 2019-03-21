@@ -4,5 +4,5 @@ RUN mkdir -p /demo
 COPY . /demo
 RUN pip3 install -r /demo/requirements.txt
 WORKDIR /demo
-ENTRYPOINT [ "python" ]
+ENTRYPOINT [ "python3" ]
 CMD [ "app.py" ]
