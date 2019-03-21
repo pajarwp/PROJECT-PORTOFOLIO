@@ -13,23 +13,23 @@ class CreateTokenUserResources(Resource):
 
     def get(self):
         parser = reqparse.RequestParser()
-        parser.add_argument('username', location='json', required=True)
+        parser.add_argument('store_name', location='json', required=True)
         parser.add_argument('password', location='json', required=True)
         args = parser.parse_args()
         password = hashlib.md5(args['password'].encode()).hexdigest()
 
-        user = Users.query.filter_by(username = args['username']).filter_by(password = password).first()
+        user = Users.query.filter_by(store_name = args['store_name']).filter_by(password = password).first()
         
         if user is not None:
             qry = marshal(user, Users.response_field)
             data = {
                 'user_id' : qry['user_id'],
-                'username' : qry['username'],
+                'store_name' : qry['store_name'],
                 'status' : qry['status']
             }
             token = create_access_token(identity = data)
         else:
-            return {'status':'UNAUTORIZED', 'message':'wrong username or password'}, 401
+            return {'status':'UNAUTORIZED', 'message':'wrong store_name or password'}, 401
         return {'status': 'success', 'message': 'logged in' ,'token': token}, 200
 
 class CreateTokenBuyerResources(Resource):
