@@ -38,6 +38,7 @@ class UserResource(Resource):
                     'email' : data['email'],
                     'phone' : data['phone'],
                     'website' : data['website'],
+                    'address' : data['address'],
                     'status' : data['status'],
                     'url_image' : data['url_image'],
                     'description' : data['description'],
@@ -53,6 +54,7 @@ class UserResource(Resource):
                     'email' : data['email'],
                     'phone' : data['phone'],
                     'website' : data['website'],
+                    'address' : data['address'],
                     'status' : data['status'],
                     'url_image' : data['url_image'],
                     'description' : data['description'],
@@ -68,12 +70,13 @@ class UserResource(Resource):
         parse.add_argument('phone', location='json', required=True)
         parse.add_argument('password', location='json', required=True)
         parse.add_argument('website', location='json', required=True)
+        parse.add_argument('address', location='json', required=True)
         parse.add_argument('url_image', location='json', required=True)
         parse.add_argument('description', location='json', required=True)
 
         args = parse.parse_args()
         password = hashlib.md5(args['password'].encode()).hexdigest()
-        users = Users(None, args['store_name'], args['email'], args['phone'], password, args['website'], 'user', args['url_image'], args['description'])
+        users = Users(None, args['store_name'], args['email'], args['phone'], password, args['website'], args['address'], 'user', args['url_image'], args['description'])
 
         db.session.add(users)
         db.session.commit()
@@ -92,6 +95,7 @@ class UserResource(Resource):
             parse.add_argument('phone', location='json', required=True)
             parse.add_argument('password', location='json', required=True)
             parse.add_argument('website', location='json', required=True)
+            parse.add_argument('address', location='json', required=True)
             parse.add_argument('url_image', location='json', required=True)
             parse.add_argument('description', location='json', required=True)
 
@@ -107,6 +111,7 @@ class UserResource(Resource):
                 qry.phone = args['phone']
                 qry.password = password
                 qry.website = args['website']
+                qry.address = args['address']
                 qry.url_image = args['url_image']
                 qry.description = args['description']
 
