@@ -30,7 +30,7 @@ class CreateTokenUserResources(Resource):
             token = create_access_token(identity = data)
         else:
             return {'status':'UNAUTORIZED', 'message':'wrong store name or password'}, 401
-        return {'status': 'success', 'message': 'logged in' ,'token': token}, 200
+        return {'status': 'success', 'message': 'logged in', 'data': qry, 'token': token}, 200
 
 class CreateTokenBuyerResources(Resource):
 
@@ -53,7 +53,7 @@ class CreateTokenBuyerResources(Resource):
             token = create_access_token(identity = data)
         else:
             return {'status':'UNAUTORIZED', 'message':'wrong username or password'}, 401
-        return {'status':'success', 'message':'logged in', 'token': token}, 200
+        return {'status':'success', 'message':'logged in', 'data': qry ,'token': token}, 200
 
 api.add_resource(CreateTokenUserResources, '/login/user')
 api.add_resource(CreateTokenBuyerResources, '/login/buyer')
