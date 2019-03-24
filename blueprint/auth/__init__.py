@@ -12,7 +12,7 @@ api = Api(bp_auth)
 CORS(bp_auth)
 class CreateTokenUserResources(Resource):
 
-    def get(self):
+    def post(self):
         parser = reqparse.RequestParser()
         parser.add_argument('store_name', location='json', required=True)
         parser.add_argument('password', location='json', required=True)
@@ -35,7 +35,7 @@ class CreateTokenUserResources(Resource):
 
 class CreateTokenBuyerResources(Resource):
 
-    def get(self):
+    def post(self):
         parser = reqparse.RequestParser()
         parser.add_argument('username', location='json', required=True)
         parser.add_argument('password', location='json', required=True)
