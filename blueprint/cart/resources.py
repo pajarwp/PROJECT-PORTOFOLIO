@@ -39,6 +39,7 @@ class CartResource(Resource):
                             'color' : item['color'],
                             'posted_by' : item['posted_by'],
                             'qty' : data['item_sum'],
+                            'imgurl1': item['imgurl1'],
                         }                
                         list_item.append(item_dict)
                 return {'status':'success', 'list_item': list_item, 'total_payment':total_price}, 200, {'Content-Type': 'application/json'}
@@ -156,6 +157,7 @@ class TransactionDetailResource(Resource):
                             'color' : item['color'],
                             'posted_by' : item['posted_by'],
                             'qty' : data['item_sum'],
+                            'imgurl1' : item['imgurl1'],
                         }                
                         list_item.append(item_dict)
                 return {'status':'success', 'list_item': list_item, 'total_payment':total_price}, 200, {'Content-Type': 'application/json'}                
