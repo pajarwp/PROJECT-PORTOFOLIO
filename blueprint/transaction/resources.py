@@ -3,6 +3,7 @@ from flask import Blueprint
 from flask_restful import Api, Resource, reqparse, marshal
 from blueprint import db
 from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_cors import CORS
 from sqlalchemy import desc
 from blueprint.cart import Carts
 from blueprint.buyer import Buyers
@@ -10,7 +11,7 @@ from . import *
 
 bp_transaction = Blueprint('transaction', __name__)
 api = Api(bp_transaction)
-
+CORS(bp_transaction)
 class TransactionResource(Resource) :
     @jwt_required
     def post(self):

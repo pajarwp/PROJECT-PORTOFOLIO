@@ -1,6 +1,7 @@
 import logging, json
 from flask import Blueprint
 from flask_restful import Api, Resource, reqparse, marshal
+from flask_cors import CORS
 from blueprint import db
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from . import *
@@ -9,7 +10,7 @@ from blueprint.buyer import Buyers
 
 bp_cart = Blueprint('cart', __name__)
 api = Api(bp_cart)
-
+CORS(bp_cart)
 class CartResource(Resource):
     @jwt_required
     def get(self):

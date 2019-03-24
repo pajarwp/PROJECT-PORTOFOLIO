@@ -1,6 +1,7 @@
 import logging, json, hashlib
 from flask import Blueprint
 from flask_restful import Api, Resource, reqparse, marshal
+from flask_cors import CORS
 from ..user import Users
 from ..buyer import Buyers
 
@@ -8,7 +9,7 @@ from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_requir
 
 bp_auth = Blueprint('auth', __name__)
 api = Api(bp_auth)
-
+CORS(bp_auth)
 class CreateTokenUserResources(Resource):
 
     def get(self):

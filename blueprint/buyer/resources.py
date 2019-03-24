@@ -3,13 +3,14 @@ from flask import Blueprint
 from flask_restful import Api, Resource, reqparse, marshal
 from blueprint import db
 from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_cors import CORS
 from . import *
 from blueprint.user import Users
 from blueprint.buyer import Buyers
 
 bp_buyer = Blueprint('buyer', __name__)
 api = Api(bp_buyer)
-
+CORS(bp_buyer)
 class BuyerResource(Resource):
     @jwt_required
     def get(self, buyer_id=None):

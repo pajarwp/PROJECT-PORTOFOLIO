@@ -1,6 +1,7 @@
 import logging, json
 from flask import Blueprint
 from flask_restful import Api, Resource, reqparse, marshal
+from flask_cors import CORS
 from blueprint import db
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from blueprint.user import Users
@@ -8,7 +9,7 @@ from . import *
 
 bp_item = Blueprint('item', __name__)
 api = Api(bp_item)
-
+CORS(bp_item)
 class ItemResource(Resource):
     def get(self, item_id=None):
         if item_id == None:

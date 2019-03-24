@@ -1,6 +1,7 @@
 import logging, json, hashlib
 from flask import Blueprint
 from flask_restful import Api, Resource, reqparse, marshal
+from flask_cors import CORS
 from blueprint import db
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from . import *
@@ -9,7 +10,7 @@ from blueprint.buyer import Buyers
 
 bp_user = Blueprint('user', __name__)
 api = Api(bp_user)
-
+CORS(bp_user)
 class UserResource(Resource):
     def __init__(self):
         if Users.query.first() is None:
