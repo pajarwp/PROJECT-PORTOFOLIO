@@ -30,6 +30,7 @@ class CartResource(Resource):
                         data = marshal(data, Carts.response_field)
                         item = qry2.get(data['item_id'])
                         item = marshal(item, Items.response_field)
+                        price_total = (data['item_sum'] * item['price']) 
                         total_price = total_price + data['total_price']
                         item_dict = {
                             'item_id' : item['item_id'],
@@ -41,6 +42,7 @@ class CartResource(Resource):
                             'posted_by' : item['posted_by'],
                             'qty' : data['item_sum'],
                             'imgurl1': item['imgurl1'],
+                            'price_total': price_total,
                         }                
                         list_item.append(item_dict)
                 return {'status':'success', 'list_item': list_item, 'total_payment':total_price}, 200, {'Content-Type': 'application/json'}
@@ -148,6 +150,7 @@ class TransactionDetailResource(Resource):
                         data = marshal(data, Carts.response_field)
                         item = qry2.get(data['item_id'])
                         item = marshal(item, Items.response_field)
+                        price_total = (data['item_sum'] * item['price']) 
                         total_price = total_price + data['total_price']
                         item_dict = {
                             'item_id' : item['item_id'],
@@ -159,6 +162,7 @@ class TransactionDetailResource(Resource):
                             'posted_by' : item['posted_by'],
                             'qty' : data['item_sum'],
                             'imgurl1' : item['imgurl1'],
+                            'price_total': price_total
                         }                
                         list_item.append(item_dict)
                 return {'status':'success', 'list_item': list_item, 'total_payment':total_price}, 200, {'Content-Type': 'application/json'}                
