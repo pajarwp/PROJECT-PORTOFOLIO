@@ -29,7 +29,7 @@ class UserResource(Resource):
             if args['user_id'] is not None :
                 qry = qry.filter(Users.user_id.like(args['user_id']))                  
             if args['store_name'] is not None:
-                qry = qry.filter(Users.store_name.like("%"+args['store_name']+"%"))
+                qry = qry.filter(Users.store_name.like(args['store_name']))
             user_lists = []
             for user in qry:
                 data = marshal(user, Users.response_field)
