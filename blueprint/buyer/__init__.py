@@ -12,7 +12,7 @@ class Buyers(db.Model):
     email = db.Column(db.String(50), unique=True)
     password = db.Column(db.String(50))
     status = db.Column(db.String(50))
-    url_image = db.Column(db.String(50))
+    url_image = db.Column(db.Text)
 
     response_field = {
         'buyer_id' : fields.Integer,

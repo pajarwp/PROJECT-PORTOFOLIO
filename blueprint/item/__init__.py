@@ -13,10 +13,10 @@ class Items(db.Model):
     qty = db.Column(db.Integer)
     posted_by = db.Column(db.String(50))
     description = db.Column(db.Text)
-    imgurl1 = db.Column(db.String(50))
-    imgurl2 = db.Column(db.String(50))
-    imgurl3 = db.Column(db.String(50))
-    imgurl4 = db.Column(db.String(50))
+    imgurl1 = db.Column(db.Text)
+    imgurl2 = db.Column(db.Text)
+    imgurl3 = db.Column(db.Text)
+    imgurl4 = db.Column(db.Text)
 
     response_field = {
         'item_id' : fields.Integer,
