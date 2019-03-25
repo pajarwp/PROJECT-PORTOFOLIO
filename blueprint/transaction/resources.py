@@ -65,7 +65,7 @@ class TransactionResource(Resource) :
                 qry = Transactions.query
 
                 rows = []
-                for row in qry.limit(args['rp']).offset(offset).all():
+                for row in qry:
                     if row.buyer_id == identity['buyer_id'] :
                         rows.append(marshal(row, Transactions.response_field))
                 return {'status':'success','data':rows}, 200, {'Content-Type': 'application/json'}
