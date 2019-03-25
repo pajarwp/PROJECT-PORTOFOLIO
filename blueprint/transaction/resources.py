@@ -37,12 +37,15 @@ class TransactionResource(Resource) :
                             transaction = Transactions.query.order_by(desc(Transactions.transaction_id)).first()
                             cart.transaction_id = transaction.transaction_id + 1
                             db.session.commit()
-                transactions = Transactions(None, identity['buyer_id'], total_price)
-                db.session.add(transactions)
-                db.session.commit()
-                data = marshal(transactions, Transactions.response_field)
+                if total_price > 0 :            
+                    transactions = Transactions(None, identity['buyer_id'], total_price)
+                    db.session.add(transactions)
+                    db.session.commit()
+                    data = marshal(transactions, Transactions.response_field)
+                    return {'status':'transaction successful','data':data}, 200, {'Content-Type': 'application/json'}
 
-                return {'status':'transaction successful','data':data}, 200, {'Content-Type': 'application/json'}
+                else :
+                    return {'status':'transaction failed'}, 200, {'Content-Type': 'application/json'}
 
     @jwt_required
     def get(self, transaction_id=None):
