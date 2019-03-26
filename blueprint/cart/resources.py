@@ -33,7 +33,7 @@ class CartResource(Resource):
                         price_total = (data['item_sum'] * item['price']) 
                         total_price = total_price + data['total_price']
                         item_dict = {
-                            'cart_id' : data['cart_id']
+                            'cart_id' : data['cart_id'],
                             'item_id' : item['item_id'],
                             'item_name' : item['item_name'],
                             'category' : item['category'],
@@ -154,7 +154,7 @@ class TransactionDetailResource(Resource):
                         price_total = (data['item_sum'] * item['price']) 
                         total_price = total_price + data['total_price']
                         item_dict = {
-                            'cart_id' : data['cart_id']
+                            'cart_id' : data['cart_id'],
                             'item_id' : item['item_id'],
                             'item_name' : item['item_name'],
                             'category' : item['category'],
